@@ -7,8 +7,6 @@
     },
     "builders": [{
         "type": "amazon-ebs",
-        "access_key": "{{user `aws_access_key`}}",
-        "secret_key": "{{user `aws_secret_key`}}",
         "region": "{{user `region`}}",
         "source_ami_filter": {
           "filters": {
@@ -26,20 +24,17 @@
         "ami_description": "{{user `project`}}",
         "tags": {
           "Name": "{{user `project`}}"
-      },
-      "run_tags": {
-        "Name": "Packer Builder {{user `project`}}"
       }
     }],
     "provisioners": [
         {
             "type": "shell",
-            "script": "{{template_dir}}/scripts/install_packages.sh",
+            "script": "{{template_dir}}/{{user `scripts_dir`}}/install_packages.sh",
             "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'"
         },
         {
             "type": "file",
-            "source": "./{{user `site_dir`}}",
+            "source": "{{template_dir}}/{{user `site_dir`}}",
             "destination": "/home/ubuntu"
         },
         {
